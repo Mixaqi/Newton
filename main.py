@@ -85,7 +85,7 @@ def newton_system_partial_predictor_corrector(F: callable, x0: np.ndarray, alpha
 
 def F(x: np.ndarray) -> np.ndarray:
     return np.array([
-        x[0] ** 2 + x[1] ** 2 - x[2] ** 3 - 10,
+        np.sin(x[0]) + x[1] ** 2 - x[2] ** 3 - 10,
         x[0] * x[1] - x[2] * x[3] + 5,
         x[2] * x[4] - x[1] * x[5] - 7,
         x[0] ** 2 + x[3] ** 2 - 2 * x[4] ** 2 - 6,
