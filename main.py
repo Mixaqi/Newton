@@ -2,6 +2,7 @@ import autograd.numpy as np
 from autograd import jacobian
 import time
 
+
 def newton_system(F: callable, x0: np.ndarray, tol: float = 1e-5, max_iter: int = 100) -> np.ndarray:
     """
     Implementation of Newton's method for solving a system of nonlinear equations.
@@ -22,8 +23,9 @@ def newton_system(F: callable, x0: np.ndarray, tol: float = 1e-5, max_iter: int 
         dx = np.linalg.solve(Jx, -Fx)
         x = x + dx
         if np.linalg.norm(dx) < tol:
-            return x, i+1
+            return x, i + 1
     raise Exception("Failed to converge after {} iterations".format(max_iter))
+
 
 def newton_system_full_predictor(F: callable, x0: np.ndarray, tol: float = 1e-5, max_iter: int = 100) -> np.ndarray:
     """
@@ -48,7 +50,7 @@ def newton_system_full_predictor(F: callable, x0: np.ndarray, tol: float = 1e-5,
         dx_corr = np.linalg.solve(Jx, -Fx_pred)
         x = x_pred + dx_corr
         if np.linalg.norm(dx_corr) < tol:
-            return x, i+1
+            return x, i + 1
     raise Exception("Failed to converge after {} iterations".format(max_iter))
 
 
@@ -72,24 +74,27 @@ def newton_system_partial_predictor_corrector(F: callable, x0: np.ndarray, alpha
         Fx = F(x)
         Jx = jacobian(F)(x)
         dx = np.linalg.solve(Jx, -Fx)
-        x_pred = x + alpha*dx
+        x_pred = x + alpha * dx
         Fx_pred = F(x_pred)
         dx_corr = np.linalg.solve(Jx, -Fx_pred)
-        x = x_pred + (1-alpha)*dx_corr
+        x = x_pred + (1 - alpha) * dx_corr
         if np.linalg.norm(dx_corr) < tol:
-            return x, i+1
+            return x, i + 1
     raise Exception("Failed to converge after {} iterations".format(max_iter))
-
 
 
 def F(x: np.ndarray) -> np.ndarray:
     return np.array([
-        x[0]**2 + x[1]**2 + x[2]**2 - 10,
-        x[0]*x[1] - 5*x[1] + x[2]**3 + 1,
-        x[0]*x[2] + x[1]*x[2] - 2*x[2] - 1
+        x[0] ** 2 + x[1] ** 2 - x[2] ** 3 - 10,
+        x[0] * x[1] - x[2] * x[3] + 5,
+        x[2] * x[4] - x[1] * x[5] - 7,
+        x[0] ** 2 + x[3] ** 2 - 2 * x[4] ** 2 - 6,
+        x[1] * x[2] + x[3] * x[5] - 9,
+        x[0] * x[4] - x[1] * x[3] + x[2] * x[5] + 3
     ])
 
-x0 = np.array([1.0, 1.0, 1.0])
+
+x0 = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
 start_time = time.time()
 x, n_iterations = newton_system(F, x0)
 end_time = time.time()
@@ -98,8 +103,7 @@ print(f"Solution: {x}")
 print(f"Iterations: {n_iterations}")
 print(f"Execution time: {end_time - start_time} seconds")
 
-
-x0 = np.array([1.0, 1.0, 1.0])
+x0 = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
 start_time = time.time()
 x, n_iterations = newton_system_full_predictor(F, x0)
 end_time = time.time()
@@ -108,8 +112,7 @@ print(f"Solution: {x}")
 print(f"Iterations: {n_iterations}")
 print(f"Execution time: {end_time - start_time} seconds")
 
-
-x0 = np.array([1.0, 1.0, 1.0])
+x0 = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
 start_time = time.time()
 x, n_iterations = newton_system_partial_predictor_corrector(F, x0)
 end_time = time.time()
